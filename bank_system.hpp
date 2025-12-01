@@ -27,10 +27,11 @@ protected:
     std::string _name;
 public:
     BankAccount(double balance, std::string name);
-    virtual ~BankAccount();
+    virtual ~BankAccount() {};
     virtual void display() const noexcept = 0;
-    virtual void withdraw(int) = 0;
-    virtual void deposit(int) = 0;
+    virtual void withdraw(double) = 0;
+    virtual void deposit(double) = 0;
+    std::string getCardNumer() const noexcept { return _card_number; }
     double getBalance() const noexcept { return _balance; }
     std::string getName() const noexcept { return _name; }
 };
@@ -42,8 +43,8 @@ private:
 public:
     SavingsAccount(double balance, std::string name, double overdraft) : BankAccount{balance, name}, _overdraft{overdraft} {}
     virtual void display() const noexcept override;
-    virtual void withdraw(int amount) override;
-    virtual void deposit(int amount) override;
+    virtual void withdraw(double amount) override;
+    virtual void deposit(double amount) override;
 };
 
 class CheckingAccount : public BankAccount
@@ -52,19 +53,21 @@ private:
     double _rate;
 public:
     CheckingAccount(double balance, std::string name, double rate) : BankAccount{balance, name}, _rate{rate} {} 
-    void update();
     virtual void display() const noexcept override;
-    virtual void withdraw(int amount) override;
-    virtual void deposit(int amount) override;
+    virtual void withdraw(double amount) override;
+    virtual void deposit(double amount) override;
+    void update() { _balance = _balance / 100 * _rate; }
 };
 
 class Bank
 {
 private:
     std::vector<BankAccount*> _bank_accounts;
-    void CreateSaving();
-    void CreateChecking();
+    
 public:
-    void transfer(const BankAccount& lhs, const BankAccount& rhs);
     BankAccount& operator[](std::string card_number);
+    void CreateSaving(double balance, std::string name, double overdraft) { _bank_accounts.push_back(new SavingsAccount(balance, name, overdraft)); }
+    void CreateSaving(const SavingsAccount& sa) { } 
+    void CreateChecking(double balance, std::string name, double rate) { _bank_accounts.push_back(new CheckingAccount(balance, name, rate)); }
+    void transfer(const BankAccount& lhs, const BankAccount& rhs, double amount);
 };
