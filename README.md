@@ -1,93 +1,153 @@
-Bank Account Management System
-A C++ banking system that implements savings and checking accounts with exception handling, transfers, and overdraft protection.
-Features
+🏦 C++ Bank System
 
-Two Account Types:
+A complete banking system implemented in modern C++ featuring polymorphism, custom exceptions, two account types, money transfers, and an overloaded operator[] for card-based account lookup.
+Includes a full test suite inside main.cpp.
 
-Savings Account: Supports overdraft protection
-Checking Account: Includes interest rate functionality
+🚀 Features
 
+Abstract base class BankAccount
 
-Core Operations:
+Two concrete account types:
 
-Deposit funds
-Withdraw funds
-Transfer between accounts
-Account lookup by card number
+SavingsAccount — supports overdraft
 
+CheckingAccount — supports interest rate
 
-Exception Handling:
+Automatic, unique card number generation
 
-Negative amount protection
-Insufficient funds detection
-Account not found errors
-Custom exception hierarchy
+Account lookup via Bank::operator[]
 
+Money transfer between accounts
 
+Full exception system:
 
-Files
+Negative_Amount
 
-bank_system.hpp - Header file with class declarations
-banking_system.cpp - Implementation of banking system
-main.cpp - Comprehensive testing suite
-Makefile - Build automation
+InsufficientFunds
 
-Requirements
+AccountNotFound
 
-C++17 compatible compiler (g++, clang++)
-Make utility
+16 comprehensive tests covering all features
 
-Building
-Compile the project:
-bashmake
-Run the executable:
-bashmake run
-Clean build files:
-bashmake clean
+📁 Project Structure
+📁 project/
+ ├── Makefile
+ ├── bank_system.hpp
+ ├── banking_system.cpp
+ ├── main.cpp
+
+🛠 Build & Run
+Build:
+make
+
+Run:
+make run
+
 Rebuild from scratch:
-bashmake rebuild
-Usage Example
-cppBank bank;
+make rebuild
 
-// Create accounts
+Clean object files:
+make clean
+
+📘 Class Overview
+🔹 BankAccount (Abstract)
+
+Base class for all account types.
+Fields:
+
+_card_number
+
+_balance
+
+_name
+
+Pure virtual methods:
+
+display()
+
+withdraw()
+
+deposit()
+
+🔹 SavingsAccount
+
+Special features:
+
+Supports overdraft (_overdraft)
+
+Can withdraw beyond balance if overdraft allows
+
+🔹 CheckingAccount
+
+Special features:
+
+Has interest rate (_rate)
+
+update() recalculates balance based on the rate
+
+🔹 Bank
+
+Stores account pointers and provides:
+
+Creating savings/checking accounts
+
+Access accounts by card number via operator[]
+
+Money transfers with exception safety
+
+🧪 Testing
+
+main.cpp includes 16 detailed test cases, verifying:
+
+✔ Account creation
+✔ Displaying account info
+✔ Deposits and withdrawals
+✔ Overdraft behavior
+✔ Transfers
+✔ Access via operator[]
+✔ All exception types
+✔ Complex operation sequences
+
+Example output snippet:
+
+TEST 1: Creating Accounts
+============================================================
+
+Created 4 accounts successfully
+Alice's card: 1178584561034111
+Bob's card:   ...
+
+💡 Usage Example
+Bank bank;
+
 SavingsAccount alice(1000.0, "Alice Johnson", 500.0);
 CheckingAccount bob(2500.0, "Bob Smith", 5.0);
 
 bank.CreateSaving(alice);
 bank.CreateChecking(bob);
 
-// Perform operations
-alice.deposit(500.0);
-alice.withdraw(300.0);
-bank.transfer(alice, bob, 200.0);
+alice.deposit(500);
+bank.transfer(alice, bob, 200);
+bob.withdraw(300);
 
-// Display account info
-alice.display();
-Exception Types
+⚠ Exception Handling
 
-Negative_Amount - Thrown when negative values are used
-InsufficientFunds - Thrown when account lacks funds
-AccountNotFound - Thrown when card number doesn't exist
+Custom exceptions guarantee safety and clarity:
 
-Testing
-The main.cpp file includes 16 comprehensive tests covering:
+Negative_Amount — deposit/withdraw/transfer below zero
 
-Account creation and display
-Deposits and withdrawals
-Overdraft usage
-Transfers between accounts
-All exception scenarios
-Edge cases
+InsufficientFunds — not enough balance
 
-Run with make run to see full test output.
-Class Hierarchy
-BankException (extends std::runtime_error)
-├── Negative_Amount
-├── InsufficientFunds
-└── AccountNotFound
+AccountNotFound — invalid card number
 
-BankAccount (abstract base class)
-├── SavingsAccount
-└── CheckingAccount
+Example:
 
-Bank (manages multiple accounts)
+try {
+    alice.withdraw(-50);
+} catch (Negative_Amount& e) {
+    std::cout << e.what();
+}
+
+📄 License
+
+MIT License — feel free to use, modify, and distribute.
