@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <exception>
 #include <string>
@@ -27,6 +28,7 @@ protected:
     std::string _name;
 public:
     BankAccount(double balance, std::string name);
+    BankAccount(BankAccount &&) noexcept = default;
     virtual ~BankAccount() {};
     virtual void display() const noexcept = 0;
     virtual void withdraw(double) = 0;
@@ -42,6 +44,7 @@ private:
     double _overdraft;
 public:
     SavingsAccount(double balance, std::string name, double overdraft) : BankAccount{balance, name}, _overdraft{overdraft} {}
+    SavingsAccount(SavingsAccount &&) noexcept = default;
     virtual void display() const noexcept override;
     virtual void withdraw(double amount) override;
     virtual void deposit(double amount) override;
@@ -53,6 +56,7 @@ private:
     double _rate;
 public:
     CheckingAccount(double balance, std::string name, double rate) : BankAccount{balance, name}, _rate{rate} {} 
+    CheckingAccount(CheckingAccount &&) noexcept = default;
     virtual void display() const noexcept override;
     virtual void withdraw(double amount) override;
     virtual void deposit(double amount) override;
@@ -67,7 +71,8 @@ private:
 public:
     BankAccount& operator[](std::string card_number);
     void CreateSaving(double balance, std::string name, double overdraft) { _bank_accounts.push_back(new SavingsAccount(balance, name, overdraft)); }
-    void CreateSaving(const SavingsAccount& sa) { } 
+    void CreateSaving(SavingsAccount& sa) { _bank_accounts.push_back(&sa); }
     void CreateChecking(double balance, std::string name, double rate) { _bank_accounts.push_back(new CheckingAccount(balance, name, rate)); }
+    void CreateChecking(CheckingAccount& ca) { _bank_accounts.push_back(&ca); }
     void transfer(const BankAccount& lhs, const BankAccount& rhs, double amount);
 };

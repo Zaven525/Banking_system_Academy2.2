@@ -72,10 +72,10 @@ BankAccount& Bank::operator[](std::string card_number)
 
 void Bank::transfer(const BankAccount& lhs, const BankAccount& rhs, double amount)
 {
-    if (lhs.getCardNumer() == rhs.getCardNumer()) return;
-    if (amount < 0) throw Negative_Amount("U cant transfer negative amount");
     
     try {
+        if (lhs.getCardNumer() == rhs.getCardNumer()) return;
+        if (amount < 0) throw Negative_Amount("U cant transfer negative amount");
         BankAccount& from = (*this)[lhs.getCardNumer()];
         BankAccount& to = (*this)[rhs.getCardNumer()];
 
